@@ -1,0 +1,7 @@
+numpy==1.26.4
+pandas==2.1.4
+plotly==5.15.0
+# kaleido is optional — used only for PNG screenshots of the dashboard.
+# If it cannot be installed in your environment, the HTML dashboard still
+# builds fully; screenshots are skipped gracefully.
+# kaleido>=0.2.1
