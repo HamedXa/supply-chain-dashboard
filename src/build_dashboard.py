@@ -227,27 +227,29 @@ def findings_panel(d: dict) -> str:
     exp = m.set_index("mode_name").loc["Express"]
     std = m.set_index("mode_name").loc["Standard"]
     items = [
-        f"<b>BudgetHaul is the weak link:</b> {bh['late_pct']:.2f}% late rate "
-        f"(vs {cp['late_pct']:.2f}% for {cp['carrier_name']}) with pickup SLA "
-        f"compliance of only {bh['pickup_pct']:.2f}% vs {h['pickup_pct']:.2f}% network-wide.",
-        f"<b>Winter nearly doubles failures:</b> {winter['Winter (Dec-Feb)']:.2f}% late "
-        f"in Dec–Feb vs {winter['Rest of year']:.2f}% the rest of the year.",
-        f"<b>March 2025 capacity crunch:</b> {dis.loc['Mar 2025','late_pct']:.2f}% late, "
-        f"{dis.loc['Mar 2025','avg_late']:.2f} avg days late — the worst month on record "
-        f"(baseline {dis.loc['Baseline','late_pct']:.2f}% / {dis.loc['Baseline','avg_late']:.2f} days).",
-        f"<b>Remote Atlantic provinces lag:</b> PE {p.set_index('province_code').loc['PE','late_pct']:.2f}%, "
+        f"<b>One carrier is dragging the network down:</b> {bh['late_pct']:.2f}% late "
+        f"(vs {cp['late_pct']:.2f}% for {cp['carrier_name']}), with pickup SLA "
+        f"compliance of only {bh['pickup_pct']:.2f}% vs {h['pickup_pct']:.2f}% network-wide. "
+        f"Slow pickup turns into late delivery.",
+        f"<b>Winter is the worst stretch:</b> {winter['Winter (Dec-Feb)']:.2f}% late "
+        f"in Dec-Feb vs {winter['Rest of year']:.2f}% the rest of the year.",
+        f"<b>March 2025 was the worst month in the data:</b> {dis.loc['Mar 2025','late_pct']:.2f}% late, "
+        f"{dis.loc['Mar 2025','avg_late']:.2f} avg days late "
+        f"(baseline {dis.loc['Baseline','late_pct']:.2f}% / {dis.loc['Baseline','avg_late']:.2f} days). "
+        f"That was a capacity crunch, not weather.",
+        f"<b>The Atlantic provinces get the worst of it:</b> PE {p.set_index('province_code').loc['PE','late_pct']:.2f}%, "
         f"NL {p.set_index('province_code').loc['NL','late_pct']:.2f}%, "
-        f"NB {p.set_index('province_code').loc['NB','late_pct']:.2f}% — ~2× the network rate at ~$22.70/order.",
-        f"<b>Speed costs money:</b> Express at ${exp['avg_cost']:.2f}/order "
-        f"({exp['avg_cost']/std['avg_cost']:.2f}× Standard) halves the late rate "
+        f"NB {p.set_index('province_code').loc['NB','late_pct']:.2f}% - about 2x the network rate at ~$22.70/order.",
+        f"<b>Express costs more but works:</b> ${exp['avg_cost']:.2f}/order "
+        f"({exp['avg_cost']/std['avg_cost']:.2f}x Standard) with roughly half the late rate "
         f"({exp['late_pct']:.2f}% vs {std['late_pct']:.2f}%).",
     ]
     recs = [
-        "Renegotiate BudgetHaul: enforce the 2-day pickup SLA with penalties or shift volume to premium carriers.",
-        "Adopt a winter playbook — buffered promise dates and pre-booked linehaul capacity for Dec–Feb.",
-        "Review the Atlantic service promise: adjusted SLAs or regional sort capacity for NL/PE/NB.",
-        "Build a disruption contingency plan from the March 2025 post-mortem (backup capacity, proactive comms).",
-        "Codify ship-mode guidance: Express for time-sensitive orders, Standard for cost-sensitive volume.",
+        "Enforce the 2-day pickup SLA with BudgetHaul - with penalties - or move that volume to better carriers.",
+        "Plan for winter: pad promised dates and book linehaul capacity ahead for Dec-Feb.",
+        "Rethink the Atlantic service promise: the SLA, the capacity, or the dates have to change.",
+        "Keep a backup plan for disruptions. March 2025 is what happens without one.",
+        "Use Express on purpose: time-sensitive orders go Express, everything else goes Standard.",
     ]
     f_html = "".join(f"<li>{i}</li>" for i in items)
     r_html = "".join(f"<li>{r}</li>" for r in recs)
@@ -359,9 +361,9 @@ def main() -> Path:
   <p>Canadian e-commerce operations monitoring &mdash; Jan 2024 &ndash; Dec 2025 &middot;
      {h['n']:,.0f} orders &middot; 4 warehouses &middot; 5 carriers &middot; 10 provinces</p>
 </header>
-<div class="synth"><b>Synthetic data.</b> All figures are generated from a reproducible
-synthetic dataset (seed 42). Carrier names are fictional. Built to demonstrate
-end-to-end analytics: data modelling, KPI engineering, and executive dashboarding.</div>
+<div class="synth"><b>About the data:</b> I generated all 75,000 orders myself with a Python
+script (fixed seed 42, so it is reproducible). The carrier names are fictional.
+The project is about the analytics work, not the data.</div>
 {kpi_cards(h)}
 <div class="chart" id="div-monthly"></div>
 <div class="grid2">
